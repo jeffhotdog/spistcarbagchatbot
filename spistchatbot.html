@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPIST Chatbot - FAQ</title>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Particles.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <style>
+        /* ==========================================================================
+           Global Styles
+           ========================================================================== */
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, rgba(52, 133, 58, 0.6), rgba(33, 194, 19, 0.9));
+            font-family: Arial, sans-serif;
+            color: #444444;
+            overflow: hidden;
+            position: relative;
+            font-size: 16px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* ==========================================================================
+           Dark Mode Styles (Standard Dark Mode)
+           ========================================================================== */
+        body.dark-mode {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.9));
+            color: #eee;
+        }
+
+        .chatbot.dark-mode,
+        .input-area.dark-mode,
+        .faq-header.dark-mode,
+        .faq-list.dark-mode,
+        .feedback-form.dark-mode {
+            background-color: #333;
+        }
+
+        .input-area input.dark-mode,
+        .feedback-form input.dark-mode {
+            background-color: #555;
+            color: #eee;
+            border-color: #777;
+        }
+
+        .input-area button.dark-mode,
+        .feedback-form button.dark-mode {
+            background-color: #555;
+            color: #eee;
+        }
+
+        .faq-item.dark-mode {
+            background-color: #555;
+        }
+
+        .scrollable.dark-mode::-webkit-scrollbar-track {
+            background: #333;
+        }
+
+        /* ==========================================================================
+           Chatbot Styles (Light Mode)
+           ========================================================================== */
+        .chatbot {
+            width: 80%;
+            max-width: 500px;
+            max-height: 600px;
+            background: #63da5f; /*Light Green*/
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            margin-left: auto;
+            margin-right: auto;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+
+         /* ==========================================================================
+           Input Area Styles
+           ========================================================================== */
+        .input-area {
+            display: flex;
+            padding: 10px;
+            gap: 10px;
+            background-color:  #63da5f; /*Light Green*/
+            transition: background-color 0.3s;
+        }
+         /* ==========================================================================
+           FAQ Styles
+           ========================================================================== */
+        .faq-header {
+            padding: 10px;
+            background-color:   #63da5f; /*Light Green*/
+            border-bottom: 1px solid #3d6557;
+            font-weight: bold;
+            text-align: center;
+            color: #333;
+            font-size: 18px;
+            transition: background-color 0.3s;
+        }
+           /* ==========================================================================
+           Feedback Form Styles
+           ========================================================================== */
+        .feedback-form {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+            padding: 10px;
+            background-color:  #63da5f; /*Light Green*/
+            border-top: 1px solid #3d6557;
+            transition: background-color 0.3s;
+        }
+
+        /* ==========================================================================
+           Particles Background
+           ========================================================================== */
+        #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        /* ==========================================================================
+           Background Images
+           ========================================================================== */
+        .background-images {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 400px;
+            z-index: 0;
+            padding: 10px 0;
+        }
+
+        .background-images img {
+            max-width: 150px;
+            height: auto;
+            margin: 0 20px;
+        }
+
+        /* Media Queries for Responsive Design */
+        @media (max-width: 768px) {
+            .background-images img {
+                max-width: 50px;
+                margin: 0 10px;
+            }
+            .faq-header {
+                font-size: 16px;
+            }
+            .messages {
+                max-height: calc(100% - 220px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .background-images img {
+                max-width: 40px;
+                margin: 0 8px;
+            }
+            .faq-header {
+                font-size: 14px;
+            }
+            .messages {
+                max-height: calc(100% - 240px);
+            }
+        }
+
+        /* ==========================================================================
+           Messages Area Styles
+           ========================================================================== */
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            border-bottom: 1px solid #3d6557;
+            max-height: calc(100% - 200px);
+            font-size: 16px;
+        }
+
+        .message {
+            margin: 10px 0;
+            display: flex;
+        }
+
+        .bot {
+            justify-content: flex-start;
+        }
+
+        .user {
+            justify-content: flex-end;
+        }
+
+        .message-content {
+            padding: 10px;
+            border-radius: 10px;
+            color: #ffffff;
+            max-width: 70%;
+            transition: background-color 0.3s ease;
+        }
+
+        .bot .message-content {
+            background-color: #1a734f;
+        }
+
+        .user .message-content {
+            background-color: #38a169;
+        }
+
+        /* ==========================================================================
+           Loading Bubble Styles
+           ========================================================================== */
+        .loading-bubble {
+            display: flex;
+            justify-content: flex-start;
+            margin: 10px 0;
+        }
+
+        .bubble {
+            width: 10px;
+            height: 10px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            margin: 0 3px;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .bubble:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .bubble:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes bounce {
+            0%, 80%, 100% {
+                transform: scale(0);
+            }
+            40% {
+                transform: scale(1);
+            }
+        }
+
+        .input-area input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #3d6557;
+            border-radius: 5px;
+            outline: none;
+            background-color: #3d6557;
+            color: #ffffff;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-area input:focus {
+            border-color: #1a734f;
+        }
+
+        .input-area button {
+            padding: 10px 20px;
+            background-color: #1a734f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 16px;
+        }
+
+        .input-area button:hover,
+        .input-area button:focus {
+            background-color: #155f3e;
+        }
+
+        /* ==========================================================================
+           Scrollbar Styles
+           ========================================================================== */
+        .scrollable {
+            overflow-y: auto;
+        }
+
+        .scrollable::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .scrollable::-webkit-scrollbar-thumb {
+            background: #38a169;
+            border-radius: 10px;
+        }
+
+        .scrollable::-webkit-scrollbar-track {
+            background: #63da5f;
+            transition: background-color 0.3s;
+        }
+
+        .faq-list {
+            padding: 10px;
+            background-color: #63da5f;
+            border-top: 1px solid #3d6557;
+            max-height: 100px;
+            overflow-y: auto;
+            color: #333;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .faq-item {
+            cursor: pointer;
+            padding: 5px 10px;
+            margin: 5px 0;
+            background-color: #3d6557;
+            border-radius: 5px;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.3s ease;
+            font-size: 16px;
+        }
+
+        .faq-item:hover,
+        .faq-item:focus {
+            background-color: #1a734f;
+        }
+
+        .faq-icon {
+            margin-right: 10px;
+            font-size: 18px;
+            color: #ffffff;
+        }
+
+        .feedback-form input:focus {
+            border-color: #1a734f;
+        }
+
+        .feedback-form button {
+            padding: 10px 20px;
+            background-color: #1a734f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s;
+            margin-left: 10px;
+        }
+
+        .feedback-form button:hover,
+        .feedback-form button:focus {
+            background-color: #155f3e;
+        }
+
+        /* ==========================================================================
+           Hyperlink and List Styles
+           ========================================================================== */
+        .message-content a {
+            color: #ffba00;
+            text-decoration: none;
+        }
+
+        .message-content a:hover {
+            text-decoration: underline;
+        }
+
+        .message-content ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            margin-top: 5px;
+        }
+
+        .message-content li {
+            margin: 5px 0;
+        }
+
+        .message-content strong {
+            color: #ffba00;
+        }
+
+        /* ==========================================================================
+           Dark Mode Toggle Button Styles
+           ========================================================================== */
+        .dark-mode-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #1a734f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            z-index: 2;
+        }
+
+        .dark-mode-toggle:hover {
+            background-color: #155f3e;
+        }
+    </style>
+</head>
+<body>
+  <!-- Particles Background -->
+  <div id="particles-js"></div>
+
+  <!-- Background Images -->
+  <div class="background-images">
+    <img src="assets/SPIST logo png.png" alt="SPIST Logo">
+    <img src="assets/2CARBAG.png" alt="2CARBAG Logo">
+  </div>
+
+  <!-- Dark Mode Toggle Button -->
+  <button class="dark-mode-toggle" onclick="toggleDarkMode()" aria-label="Toggle Dark Mode">
+    <i class="fas fa-moon"></i> Dark Mode
+  </button>
+
+  <!-- Chatbot -->
+  <div class="chatbot" tabindex="0">
+    <!-- Messages Area -->
+    <div class="messages scrollable" id="messages" tabindex="0">
+      <div class="message bot">
+        <div class="message-content">Welcome to SPIST Carsadang Bago Offices! You can click on any of the FAQs below or type your question.</div>
+      </div>
+    </div>
+
+    <!-- Input Area -->
+    <div class="input-area">
+      <input type="text" id="userInput" placeholder="Type your question here..." tabindex="0">
+      <button onclick="sendMessage()" tabindex="0">Send</button>
+      <button onclick="clearChat()" tabindex="0">Clear</button>
+    </div>
+
+    <!-- FAQ List -->
+    <div class="faq-header">Frequently Asked Questions</div>
+    <div class="faq-list scrollable" id="faqList" tabindex="0">
+      <!-- FAQ Items will be dynamically generated here -->
+    </div>
+
+    <!-- Feedback Form -->
+    <div class="feedback-form">
+      <input type="text" id="feedbackInput" placeholder="Provide feedback..." tabindex="0">
+      <button onclick="submitFeedback()" tabindex="0">Submit Feedback</button>
+    </div>
+  </div>
+
+  <script>
+    // FAQ Data Structure with Icons
+    const faqs = [
+      {
+        question: "What are your office hours?",
+        answer: "<p>Our office hours are 8:00 AM to 5:00 PM.</p>",
+        icon: "fas fa-clock"
+      },
+      {
+        question: "What are the admission requirements?",
+        answer: "<p>The admission requirements are:</p><ul><li>Photocopy of NSO / PSA Birth Certificate</li><li>Original Grade 10 / F138 Report Card</li><li>ESC Certificate / OVAP (if ESC Grantee)</li><li>2 pcs. Documentary Stamp</li><li>F137 (SCHOOL TO SCHOOL PROCESS 1ST REQUEST)</li><li>2 pcs 2x2 Recent picture</li></ul>",
+        icon: "fas fa-user-graduate"
+      },
+      {
+        question: "What courses do you offer?",
+        answer: "<p>We offer the following senior high school courses:</p><ul><li><strong>Academic Track</strong><ul><li>ABM - Accounting Business and Management Strand</li><li>STEM - Science Technology, Engineering and Mathematics Strand</li><li>HUMSS - Humanities and Social Sciences Strand</li></ul></li><li><strong>Technical-Vocational-Livelihood Track</strong><ul><li>TVL-ICT - Information and Communication Technology</li></ul></li></ul>",
+        icon: "fas fa-book"
+      },
+      {
+        question: "How can I contact you?",
+        answer: "<p>You can contact us at <strong>09176771919</strong> or visit our Facebook page at <a href='https://www.facebook.com/spistofficial' target='_blank'>SPIST Official</a>.</p>",
+        icon: "fas fa-envelope"
+      },
+      {
+        question: "Where are you located?",
+        answer: "<p>We are located at <strong>Blk 9 Lt 5 Legian 1B, NIA Road, Carsadang Bago II, Imus City, Cavite</strong>.</p>",
+        icon: "fas fa-map-marker-alt"
+      }
+    ];
+
+    // Dynamically Generate FAQ List with Icons
+    const faqListDiv = document.getElementById('faqList');
+    faqs.forEach((faq, index) => {
+      const faqItem = document.createElement('div');
+      faqItem.className = 'faq-item';
+      faqItem.setAttribute('tabindex', '0');
+      faqItem.onclick = () => handleFaqClick(faq.question, faq.answer);
+      faqItem.onkeydown = (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          handleFaqClick(faq.question, faq.answer);
+        }
+      };
+      // Add Icon
+      const iconSpan = document.createElement('span');
+      iconSpan.className = 'faq-icon';
+      iconSpan.innerHTML = `<i class="${faq.icon}"></i>`;
+      faqItem.appendChild(iconSpan);
+      // Add Question Text
+      const questionSpan = document.createElement('span');
+      questionSpan.textContent = faq.question;
+      faqItem.appendChild(questionSpan);
+      faqListDiv.appendChild(faqItem);
+    });
+
+    let loadingBubble;
+
+    function sendMessage() {
+      const inputField = document.getElementById('userInput');
+      const userMessage = inputField.value.trim();
+      if (userMessage === '') return;
+      const messagesDiv = document.getElementById('messages');
+      // Add user message to chat
+      const userMessageDiv = document.createElement('div');
+      userMessageDiv.className = 'message user';
+      userMessageDiv.innerHTML = `<div class="message-content">${userMessage}</div>`;
+      messagesDiv.appendChild(userMessageDiv);
+      inputField.value = '';
+      // Show loading bubble
+      showLoadingBubble();
+      // Find matching FAQ response
+      const botResponse = getBotResponse(userMessage);
+      setTimeout(() => {
+        hideLoadingBubble();
+        const botMessageDiv = document.createElement('div');
+        botMessageDiv.className = 'message bot';
+        botMessageDiv.innerHTML = `<div class="message-content">${botResponse}</div>`;
+        messagesDiv.appendChild(botMessageDiv);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      }, 1000);
+    }
+
+    function handleFaqClick(question, answer) {
+      const messagesDiv = document.getElementById('messages');
+      // Simulate user asking the question
+      const userMessageDiv = document.createElement('div');
+      userMessageDiv.className = 'message user';
+      userMessageDiv.innerHTML = `<div class="message-content">${question}</div>`;
+      messagesDiv.appendChild(userMessageDiv);
+      // Show loading bubble
+      showLoadingBubble();
+      // Simulate bot responding
+      setTimeout(() => {
+        hideLoadingBubble();
+        const botMessageDiv = document.createElement('div');
+        botMessageDiv.className = 'message bot';
+        botMessageDiv.innerHTML = `<div class="message-content">${answer}</div>`;
+        messagesDiv.appendChild(botMessageDiv);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      }, 1000);
+    }
+
+    function getBotResponse(userInput) {
+      // Check if the input matches any FAQ question
+      const faq = faqs.find(faq => faq.question.toLowerCase() === userInput.toLowerCase());
+      if (faq) {
+        return faq.answer;
+      }
+      // Default response if no match is found
+      return "<p>I'm sorry, but I can only answer frequently asked questions (FAQs). Please try asking something related to admissions, courses, schedule, contact, or location.</p>";
+    }
+
+    function showLoadingBubble() {
+      const messagesDiv = document.getElementById('messages');
+      loadingBubble = document.createElement('div');
+      loadingBubble.className = 'message bot loading-bubble';
+      loadingBubble.innerHTML = `
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+      `;
+      messagesDiv.appendChild(loadingBubble);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    function hideLoadingBubble() {
+      if (loadingBubble) {
+        loadingBubble.remove();
+      }
+    }
+
+    function clearChat() {
+      const messagesDiv = document.getElementById('messages');
+      messagesDiv.innerHTML = '';
+      const welcomeMessage = document.createElement('div');
+      welcomeMessage.className = 'message bot';
+      welcomeMessage.innerHTML = "<div class='message-content'>Welcome to SPIST Carsadang Bago Offices! You can click on any of the FAQs below or type your question.</div>";
+      messagesDiv.appendChild(welcomeMessage);
+    }
+
+    function submitFeedback() {
+      const feedbackInput = document.getElementById('feedbackInput');
+      const feedback = feedbackInput.value.trim();
+      if (feedback === '') return;
+      const messagesDiv = document.getElementById('messages');
+      // Add feedback message to chat
+      const feedbackMessageDiv = document.createElement('div');
+      feedbackMessageDiv = 'message bot';
+      feedbackMessageDiv.innerHTML = `<div class="message-content">Feedback Submitted: ${feedback}</div>`;
+      messagesDiv.appendChild(feedbackMessageDiv);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      feedbackInput.value = '';
+    }
+
+    // Dark Mode Functionality
+    function toggleDarkMode() {
+      const body = document.body;
+      const chatbot = document.querySelector('.chatbot');
+      const inputArea = document.querySelector('.input-area');
+      const faqHeader = document.querySelector('.faq-header');
+      const faqList = document.querySelector('.faq-list');
+      const feedbackForm = document.querySelector('.feedback-form');
+      const inputField = document.getElementById('userInput');
+      const feedbackInputField = document.getElementById('feedbackInput');
+      const inputButton = document.querySelector('.input-area button');
+      const feedbackButton = document.querySelector('.feedback-form button');
+      const faqItems = document.querySelectorAll('.faq-item');
+      const scrollable = document.querySelector('.scrollable');
+      const darkModeToggle = document.querySelector('.dark-mode-toggle');
+
+      body.classList.toggle('dark-mode');
+      chatbot.classList.toggle('dark-mode');
+      inputArea.classList.toggle('dark-mode');
+      faqHeader.classList.toggle('dark-mode');
+      faqList.classList.toggle('dark-mode');
+      feedbackForm.classList.toggle('dark-mode');
+      inputField.classList.toggle('dark-mode');
+      feedbackInputField.classList.toggle('dark-mode');
+      inputButton.classList.toggle('dark-mode');
+      feedbackButton.classList.toggle('dark-mode');
+      scrollable.classList.toggle('dark-mode');
+
+      faqItems.forEach(item => {
+        item.classList.toggle('dark-mode');
+      });
+
+      const isDarkMode = body.classList.contains('dark-mode');
+
+      // Update button text and icon based on dark mode state
+      if (isDarkMode) {
+        darkModeToggle.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
+      } else {
+        darkModeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark Mode';
+      }
+
+      localStorage.setItem('darkMode', isDarkMode);
+    }
+
+    // Check local storage for dark mode preference on page load
+    window.onload = () => {
+      const isDarkMode = localStorage.getItem('darkMode') === 'true';
+      const darkModeToggle = document.querySelector('.dark-mode-toggle');
+
+      if (isDarkMode) {
+        toggleDarkMode();
+        darkModeToggle.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
+      } else {
+        darkModeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark Mode';
+      }
+    };
+
+    // Initialize particles.js
+    particlesJS("particles-js", {
+      "particles": {
+        "number": {
+          "value": 80,
+          "density": {
+            "enable": true,
+            "value_area": 800
+          }
+        },
+        "color": {
+          "value": "#ffffff"
+        },
+        "shape": {
+          "type": "circle",
+          "stroke": {
+            "width": 0,
+            "color": "#000000"
+          },
+          "polygon": {
+            "nb_sides": 5
+          },
+          "image": {
+            "src": "img/github.svg",
+            "width": 100,
+            "height": 100
+          }
+        },
+        "opacity": {
+          "value": 0.5,
+          "random": false,
+          "anim": {
+            "enable": false,
+            "speed": 1,
+            "opacity_min": 0.1,
+            "sync": false
+          }
+        },
+        "size": {
+          "value": 3,
+          "random": true,
+          "anim": {
+            "enable": false,
+            "speed": 40,
+            "size_min": 0.1,
+            "sync": false
+          }
+        },
+        "line_linked": {
+          "enable": true,
+          "distance": 150,
+          "color": "#ffffff",
+          "opacity": 0.4,
+          "width": 1
+        },
+        "move": {
+          "enable": true,
+          "speed": 6,
+          "direction": "none",
+          "random": false,
+          "straight": false,
+          "out_mode": "out",
+          "attract": {
+            "enable": false,
+            "rotateX": 600,
+            "rotateY": 1200
+          }
+        }
+      },
+      "interactivity": {
+        "detect_on": "canvas",
+        "events": {
+          "onhover": {
+            "enable": true,
+            "mode": "grab"
+          },
+          "onclick": {
+            "enable": true,
+            "mode": "push"
+          },
+          "resize": true
+        },
+        "modes": {
+          "grab": {
+            "distance": 140,
+            "line_linked": {
+              "opacity": 1
+            }
+          },
+          "bubble": {
+            "distance": 400,
+            "size": 40,
+            "duration": 2,
+            "opacity": 8,
+            "speed": 3
+          },
+          "repulse": {
+            "distance": 200
+          },
+          "push": {
+            "particles_nb": 4
+          },
+          "remove": {
+            "particles_nb": 2
+          }
+        }
+      },
+      "retina_detect": true,
+      "config_demo": {
+        "hide_card": false,
+        "background_color": "#1d352f",
+        "background_image": "",
+        "background_position": "50% 50%",
+        "background_repeat": "no-repeat",
+        "background_size": "cover"
+      }
+    });
+  </script>
+</body>
+</html>
